@@ -13,8 +13,10 @@ RUN npm install
 COPY apps/auth apps/auth
 COPY libs libs
 
-RUN cd apps/auth && npm install
+WORKDIR /usr/src/app/apps/auth
+RUN npm install
 
+WORKDIR /usr/src/app
 RUN npm run build auth
 
 FROM node:alpine AS production
