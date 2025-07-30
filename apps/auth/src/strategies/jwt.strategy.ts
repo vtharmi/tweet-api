@@ -26,7 +26,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ userId }: TokenPayload) {
-    console.log('comimf userId', userId);
     return this.usersService.findOne(userId);
   }
 }
