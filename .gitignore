@@ -12,6 +12,17 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.crash
+*.backup
+override.tf
+override.tf.json
+terraform.tfvars
+*.tfplan
+
 # OS
 .DS_Store
 
