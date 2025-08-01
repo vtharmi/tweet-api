@@ -25,6 +25,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "tweets": {
+      "type": "application",
+      "root": "apps/tweets",
+      "entryFile": "main",
+      "sourceRoot": "apps/tweets/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/tweets/tsconfig.app.json"
+      }
     }
   },
   "monorepo": true,

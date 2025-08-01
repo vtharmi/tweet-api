@@ -1,4 +1,16 @@
 services:
+  tweets:
+    build:
+      context: .
+      dockerfile: apps/tweets/Dockerfile
+      target: development
+    command: npm run start:dev tweets
+    env_file:
+      - ./apps/tweets/.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
   auth:
     build:
       context: .
