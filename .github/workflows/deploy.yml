@@ -1,0 +1,81 @@
+name: CI/CD - Deploy to EC2 via ECR
+
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # Login to ECR
+    - name: Login to Amazon ECR
+      run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+    # Build and Push Auth App Docker Image
+    - name: Build Auth App Docker Image
+      run: docker build -t auth-app -f apps/auth/Dockerfile .
+
+    - name: Tag & Push Auth Image to ECR
+      run: |
+        docker tag auth-app:latest ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
+        docker push ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
+
+    # Build and Push Tweet App Docker Image
+    - name: Build Tweet App Docker Image
+      run: docker build -t api-app -f apps/api/Dockerfile .
+
+    - name: Tag & Push Tweet Image to ECR
+      run: |
+        docker tag tweet-app:latest ${{ secrets.ECR_REGISTRY }}/api-repo:latest
+        docker push ${{ secrets.ECR_REGISTRY }}/api-repo:latest
+
+    # SSH into EC2 and Deploy (Pull & Run Containers)
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
+          docker pull ${{ secrets.ECR_REGISTRY }}/api-repo:latest
+          
+          docker stop auth-app || true
+          docker rm auth-app || true
+          docker stop tweet-app || true
+          docker rm tweet-app || true
+          
+          docker run -d --name auth-app -p 3001:3001 \
+            -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            -e POSTGRES_PORT=5432 \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            -e POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e JWT_EXPIRATION=3600 \
+            -e HTTP_PORT=3001 \
+            -e TCP_PORT=3002 \
+            ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
+          
+          docker run -d --name tweet-app -p 3000:3000 \
+            -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            -e POSTGRES_PORT=5432 \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            -e POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }} \
+            -e AUTH_HOST=3001 \
+            -e AUTH_PORT=3002 \
+            ${{ secrets.ECR_REGISTRY }}/tweet-repo:latest
+
