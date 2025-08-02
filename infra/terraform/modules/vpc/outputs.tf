@@ -43,3 +43,9 @@ output "public_subnet_ids" {
   value       = aws_subnet.public_subnet.*.id
   sensitive   = false
 }
+
+output "ec2_security_group_id" {
+  description = "The ID of the security group used by ec2 instances"
+  value       = aws_security_group.ec2_tasks.id
+  sensitive   = false
+}

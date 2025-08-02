@@ -18,11 +18,10 @@ variable "instance_type" {
 variable "app_name" {
   type        = string
   description = "Application name"
-  default     = "tweet-app"
+  default     = "tweet"
 }
 
 //db
-variable "instance_class" {}
 variable "db_engine" {
   type        = string
   default     = "postgres"
@@ -35,11 +34,6 @@ variable "db_engine_version" {
   description = "The version of the database engine to use for the RDS instance"
 }
 
-variable "rds_username" {
-  type        = string
-  default     = "tweet-backend"
-  description = "The username for the RDS instance"
-}
 variable "db_master_user_password" {}
 
 variable "private_subnet_ids" {
@@ -54,30 +48,6 @@ variable "public_subnet_ids" {
   description = "A list of public subnet IDs for the RDS instance"
 }
 
-//Codepipeline
-
-variable "github_repo" {
-  description = "GitHub repository name"
-  type        = string
-}
-
-variable "github_owner" {
-  description = "GitHub owner/org name"
-  type        = string
-}
-
-variable "github_branch" {
-  description = "Branch name to pull from"
-  type        = string
-  default     = "main"
-}
-
-variable "github_oauth_token" {
-  description = "GitHub OAuth token for accessing the repository"
-  type        = string
-  sensitive   = true
-}
-
 variable "public_subnet_cidr_blocks" {
   type        = list(string)
   default     = ["10.0.101.0/24", "10.0.102.0/24"]
@@ -89,3 +59,8 @@ variable "private_subnet_cidr_blocks" {
   default     = ["10.0.1.0/24", "10.0.2.0/24"]
   description = "CIDR block range for the private subnets"
 }
+
+# variable "ssh_public_key" {
+#   type        = string
+#   description = "Public key for deploying to ec2"
+# }

@@ -6,9 +6,9 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   private_dns_enabled = true
   subnet_ids          = aws_subnet.private_subnet.*.id
 
-  # Allow traffic from the ECS Tasks security group
+  # Allow traffic from the EC2 Tasks security group
   security_group_ids = [
-    "${aws_security_group.ecs_tasks.id}",
+    "${aws_security_group.ec2_tasks.id}",
   ]
 
   tags = {
@@ -24,9 +24,9 @@ resource "aws_vpc_endpoint" "ecr_api" {
   private_dns_enabled = true
   subnet_ids          = aws_subnet.private_subnet.*.id
 
-  # Allow traffic from the ECS Tasks security group
+  # Allow traffic from the EC2 Tasks security group
   security_group_ids = [
-    "${aws_security_group.ecs_tasks.id}",
+    "${aws_security_group.ec2_tasks.id}",
   ]
 
   tags = {
@@ -43,7 +43,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   private_dns_enabled = true
 
   security_group_ids = [
-    "${aws_security_group.ecs_tasks.id}",
+    "${aws_security_group.ec2_tasks.id}",
   ]
 
   tags = {
@@ -96,7 +96,7 @@ resource "aws_vpc_endpoint" "ssm" {
   subnet_ids          = aws_subnet.private_subnet.*.id
 
   security_group_ids = [
-    "${aws_security_group.ecs_tasks.id}",
+    "${aws_security_group.ec2_tasks.id}",
   ]
 
   tags = {

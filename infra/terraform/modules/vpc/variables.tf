@@ -23,13 +23,13 @@ variable "number_of_public_subnets" {
 
 variable "private_subnet_cidr_blocks" {
   type        = list(string)
-  default     = ["10.0.0.0/18", "10.0.64.0/18"]
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]
   description = "CIDR block range for the private subnets"
 }
 
 variable "public_subnet_cidr_blocks" {
   type        = list(string)
-  default     = ["10.0.128.0/18", "10.0.192.0/18"]
+  default     = ["10.0.101.0/24", "10.0.102.0/24"]
   description = "CIDR block range for the public subnets"
 }
 
