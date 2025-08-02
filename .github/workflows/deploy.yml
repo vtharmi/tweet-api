@@ -17,11 +17,11 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ vars.AWS_REGION }}
 
     # Login to ECR
     - name: Login to Amazon ECR
-      run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+      run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
 
     # Build and Push Auth App Docker Image
     - name: Build Auth App Docker Image
@@ -29,8 +29,8 @@ jobs:
 
     - name: Tag & Push Auth Image to ECR
       run: |
-        docker tag auth-app:latest ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
-        docker push ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
+        docker tag auth-app:latest ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-repo-latest
+        docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-repo-latest
 
     # Build and Push Tweet App Docker Image
     - name: Build Tweet App Docker Image
@@ -38,8 +38,8 @@ jobs:
 
     - name: Tag & Push Tweet Image to ECR
       run: |
-        docker tag tweet-app:latest ${{ secrets.ECR_REGISTRY }}/api-repo:latest
-        docker push ${{ secrets.ECR_REGISTRY }}/api-repo:latest
+        docker tag tweet-app:latest ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-repo-latest
+        docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-repo-latest
 
     # SSH into EC2 and Deploy (Pull & Run Containers)
     - name: Deploy to EC2 via SSH
@@ -49,8 +49,9 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker pull ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
-          docker pull ${{ secrets.ECR_REGISTRY }}/api-repo:latest
+          docker pull ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-repo-latest
+          docker pull ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-repo-latest
+
           
           docker stop auth-app || true
           docker rm auth-app || true
@@ -62,7 +63,7 @@ jobs:
             -e POSTGRES_PORT=5432 \
             -e POSTGRES_USER=postgres \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            -e POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }} \
+            -e POSTGRES_DATABASE=${{ vars.POSTGRES_DATABASE }} \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             -e JWT_EXPIRATION=3600 \
             -e HTTP_PORT=3001 \
@@ -74,7 +75,7 @@ jobs:
             -e POSTGRES_PORT=5432 \
             -e POSTGRES_USER=postgres \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            -e POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }} \
+            -e POSTGRES_DATABASE=${{ vars.POSTGRES_DATABASE }} \
             -e AUTH_HOST=3001 \
             -e AUTH_PORT=3002 \
             ${{ secrets.ECR_REGISTRY }}/tweet-repo:latest
