@@ -29,7 +29,7 @@ variable "db_engine_version" {
 
 variable "rds_username" {
   type        = string
-  default     = "tweet-backend"
+  default     = "postgres"
   description = "The username for the RDS instance"
 }
 

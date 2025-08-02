@@ -1,6 +1,6 @@
-# Security group for ECS tasks
-resource "aws_security_group" "ecs_tasks" {
-  name   = "${terraform.workspace}-ecs-sg"
+# Security group for EC2 tasks
+resource "aws_security_group" "ec2_tasks" {
+  name   = "${terraform.workspace}-ec2-sg"
   vpc_id = aws_vpc.main.id
 
   # Allows inbound traffic on port 443 from the VPC CIDR block
@@ -38,7 +38,7 @@ resource "aws_security_group" "ecs_tasks" {
   }
 
   tags = {
-    "Name" = "${terraform.workspace}-ecs-sg"
+    "Name" = "${terraform.workspace}-ec2-sg"
   }
 }
 
