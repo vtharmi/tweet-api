@@ -72,7 +72,7 @@ $ npm run test:cov
 
 The infra folder contains Terraform scripts to provision AWS resources like EC2 instances and RDS.
 
-GitHub Actions workflow (.github/workflows/deploy.yml) handles CI/CD: At the moment only setup build for PRs on dev branch.
+GitHub Actions workflow (.github/workflows/deploy.yml) handles CI/CD: At the moment only setup build for PRs on dev branch..
 
 Builds Docker images for each app
 
