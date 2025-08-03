@@ -25,12 +25,13 @@ GitHub Actions configured for CI/CD pipeline to deploy to AWS EC2 via ECR
 1. Clone the repository
 2. Copy example environment files and update as needed
 3. Start the services including PostgreSQL
-    docker-compose up --build
+   docker-compose up --build
 4. The services will be available at:
-  Auth service: http://localhost:3001
-  Tweet service: http://localhost:3000
+   Auth service: http://localhost:3001
+   Tweet service: http://localhost:3000
 
 ## Database
+
 The apps use PostgreSQL configured via TypeORM.
 
 Local dev uses the PostgreSQL container defined in docker-compose.yml.
@@ -42,6 +43,7 @@ Connection details are provided via environment variables.
 ## Compile and run the project in local
 
 $ npm install
+
 ```bash
 # development
 $ npm run start
@@ -70,14 +72,13 @@ $ npm run test:cov
 
 The infra folder contains Terraform scripts to provision AWS resources like EC2 instances and RDS.
 
-GitHub Actions workflow (.github/workflows/deploy.yml) handles CI/CD:
+GitHub Actions workflow (.github/workflows/deploy.yml) handles CI/CD: At the moment only setup build for PRs on dev branch
 
 Builds Docker images for each app
 
 Pushes images to AWS ECR
 
 Deploys images to EC2 instance(s) by pulling and running containers with environment variables.
-
 
 ## Resources
 
