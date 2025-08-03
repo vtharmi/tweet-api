@@ -2,13 +2,13 @@
 
 Tweet API Monorepo.
 
-This repository contains a monorepo with two independently deployable applications:
+This repository contains a monorepo with two independently deployable applications and infrastrcute repo:
 
 Auth: Authentication service
 
 Tweet: Main tweet API service
 
-Technologies Used
+Technologies Used 
 
 Node.js with NestJS
 
