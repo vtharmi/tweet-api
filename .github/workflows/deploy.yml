@@ -19,6 +19,9 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ vars.AWS_REGION }}
 
+    - name: Debug Print AWS Region
+      run: "echo \"Deploying to AWS Region: ${{ vars.AWS_REGION }}\""
+
     # Login to ECR
     - name: Login to Amazon ECR
       run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
