@@ -37,7 +37,7 @@ jobs:
 
     # Build and Push Tweet App Docker Image
     - name: Build Tweet App Docker Image
-      run: docker build -t tweet-app -f apps/tweet/Dockerfile .
+      run: docker build -t tweet-app -f apps/tweets/Dockerfile .
 
     - name: Tag & Push Tweet Image to ECR
       run: |
