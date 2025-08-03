@@ -32,8 +32,8 @@ jobs:
 
     - name: Tag & Push Auth Image to ECR
       run: |
-        docker tag auth-app:latest ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-repo-latest
-        docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-repo-latest
+        docker tag auth-app:latest ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-latest
+        docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-latest
 
     # Build and Push Tweet App Docker Image
     - name: Build Tweet App Docker Image
@@ -41,8 +41,8 @@ jobs:
 
     - name: Tag & Push Tweet Image to ECR
       run: |
-        docker tag tweet-app:latest ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-repo-latest
-        docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-repo-latest
+        docker tag tweet-app:latest ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-latest
+        docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-latest
 
     # SSH into EC2 and Deploy (Pull & Run Containers)
     - name: Deploy to EC2 via SSH
@@ -52,8 +52,8 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker pull ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-repo-latest
-          docker pull ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-repo-latest
+          docker pull ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-latest
+          docker pull ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-latest
 
           
           docker stop auth-app || true
@@ -71,7 +71,7 @@ jobs:
             -e JWT_EXPIRATION=3600 \
             -e HTTP_PORT=3001 \
             -e TCP_PORT=3002 \
-            ${{ secrets.ECR_REGISTRY }}/auth-repo:latest
+            ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:auth-latest
           
           docker run -d --name tweet-app -p 3000:3000 \
             -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
@@ -81,5 +81,5 @@ jobs:
             -e POSTGRES_DATABASE=${{ vars.POSTGRES_DATABASE }} \
             -e AUTH_HOST=3001 \
             -e AUTH_PORT=3002 \
-            ${{ secrets.ECR_REGISTRY }}/tweet-repo:latest
+            ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:tweet-latest
 
