@@ -1,11 +1,11 @@
-resource "aws_db_subnet_group" "rds" {
-  name       = "${var.app_name}-${terraform.workspace}"
-  subnet_ids = var.private_subnet_ids
+# resource "aws_db_subnet_group" "rds" {
+#   name       = "${var.app_name}-${terraform.workspace}"
+#   subnet_ids = var.private_subnet_ids
 
-  tags = {
-    Name = "${var.app_name}${terraform.workspace}"
-  }
-}
+#   tags = {
+#     Name = "${var.app_name}${terraform.workspace}"
+#   }
+# }
 
 resource "aws_db_instance" "main" {
   db_name                   = var.app_name
@@ -18,8 +18,7 @@ resource "aws_db_instance" "main" {
   username                  = var.rds_username
   password                  = var.db_master_user_password
 
-  db_subnet_group_name      = aws_db_subnet_group.rds.name
-  vpc_security_group_ids    = var.rds_security_group_ids
+  # db_subnet_group_name      = aws_db_subnet_group.rds.name
 
   backup_retention_period   = 7
   skip_final_snapshot       = terraform.workspace != "prod"

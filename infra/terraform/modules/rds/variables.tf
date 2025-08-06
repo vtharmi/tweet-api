@@ -33,22 +33,22 @@ variable "rds_username" {
   description = "The username for the RDS instance"
 }
 
-variable "rds_security_group_ids" {
-  type        = list(string)
-  description = "A list of security group IDs for the RDS instance"
-}
+# variable "rds_security_group_ids" {
+#   type        = list(string)
+#   description = "A list of security group IDs for the RDS instance"
+# }
 
-variable "private_subnet_ids" {
-  type        = list(string)
-  default     = []
-  description = "A list of private subnet IDs for the RDS instance"
-}
+# variable "private_subnet_ids" {
+#   type        = list(string)
+#   default     = []
+#   description = "A list of private subnet IDs for the RDS instance"
+# }
 
-variable "public_subnet_ids" {
-  type        = list(string)
-  default     = []
-  description = "A list of public subnet IDs for the RDS instance"
-}
+# variable "public_subnet_ids" {
+#   type        = list(string)
+#   default     = []
+#   description = "A list of public subnet IDs for the RDS instance"
+# }
 
 variable "db_master_user_password" {
   type        = string
